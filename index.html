@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090914">
+<title>GhostMail X — Temporary Email</title>
+<style>
+:root{color-scheme:dark;--bg:#090914;--panel:#111326;--line:#282b48;--muted:#a3a8c4;--purple:#9b70ff;--cyan:#4de5ee}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -15%,#30205b 0,transparent 48%),var(--bg);color:#f7f7ff;font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+.wrap{max-width:920px;margin:auto;padding:26px 18px 50px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;letter-spacing:.3px}.ghost{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,var(--purple),var(--cyan));color:#090914;font-size:22px}
+.pill{border:1px solid #315b5e;color:#83f4e9;border-radius:99px;padding:5px 10px;font-size:12px}
+.hero{text-align:center;padding:54px 0 28px}.eyebrow{color:var(--cyan);font-size:12px;font-weight:800;letter-spacing:2px}.hero h1{font-size:clamp(34px,8vw,58px);line-height:1.08;margin:12px 0;background:linear-gradient(90deg,#fff,#bba2ff 55%,#72f1eb);background-clip:text;color:transparent}.hero p{color:var(--muted);margin:0 auto;max-width:540px}
+.card{background:linear-gradient(145deg,#15182d,#101222);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 18px 55px #0005}
+.label{color:var(--muted);font-size:13px;margin-bottom:9px}.address{display:flex;gap:9px}.address input{min-width:0;flex:1;background:#090c19;border:1px solid #303553;border-radius:12px;color:white;padding:14px;font-size:15px;outline:none}.btn{border:0;border-radius:12px;padding:12px 16px;font-weight:750;cursor:pointer;color:#090914;background:linear-gradient(100deg,var(--purple),var(--cyan))}.btn.secondary{background:#202541;color:#e8eaff;border:1px solid #363c60}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}.status{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:13px;margin-top:15px}.timer{color:#8df2e9;font-weight:700}
+.inbox{margin-top:18px}.inboxhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.inbox h2{font-size:18px;margin:0}.empty{text-align:center;padding:35px 12px;color:var(--muted);border:1px dashed #343956;border-radius:15px}.empty .symbol{font-size:32px;margin-bottom:8px}.note{color:#858ba8;font-size:12px;text-align:center;margin:20px 0 0}.features{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}.feature{background:#111326;border:1px solid var(--line);border-radius:15px;padding:14px}.feature b{display:block;font-size:14px}.feature span{color:var(--muted);font-size:12px}
+@media(max-width:600px){.wrap{padding:18px 13px 35px}.hero{padding:42px 0 24px}.card{padding:15px}.address{flex-direction:column}.address .btn{width:100%}.features{grid-template-columns:1fr}.top{align-items:flex-start}.status{font-size:12px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header class="top"><div class="brand"><div class="ghost">◉</div> GhostMail X</div><span class="pill">● DEMO MODE</span></header>
+<section class="hero"><div class="eyebrow">PRIVATE · SIMPLE · TEMPORARY</div><h1>Your inbox.<br>Your rules.</h1><p>Create a temporary email address for testing and protect your primary inbox from unwanted sign-ups.</p></section>
+<section class="card">
+  <div class="label">YOUR TEMPORARY EMAIL ADDRESS</div>
+  <div class="address"><input id="email" aria-label="Temporary email address" readonly value="Tap Generate Email to begin"><button class="btn" id="copy">Copy</button></div>
+  <div class="actions"><button class="btn" id="generate">✦ Generate Email</button><button class="btn secondary" id="reset">↻ New address</button></div>
+  <div class="status"><span id="state">Ready to generate</span><span class="timer" id="timer">15:00</span></div>
+</section>
+<section class="card inbox">
+  <div class="inboxhead"><h2>Inbox</h2><button class="btn secondary" id="refresh">↻ Refresh</button></div>
+  <div class="empty"><div class="symbol">✉</div><b>Your inbox is waiting</b><br><span>Incoming messages will appear here when real email receiving is connected.</span></div>
+</section>
+<div class="features">
+  <div class="feature"><b>⚡ Instant address</b><span>Generate a random demo address.</span></div>
+  <div class="feature"><b>◷ Auto timer</b><span>A 15-minute demo countdown.</span></div>
+  <div class="feature"><b>◇ Privacy first</b><span>Never use temporary email for important accounts.</span></div>
+</div>
+<p class="note">GhostMail X is currently a frontend demo. It does not receive or store real emails yet.</p>
+</main>
+<script>
+const email=document.getElementById('email'),state=document.getElementById('state'),timer=document.getElementById('timer');
+let seconds=900,clock=null;
+function makeAddress(){const chars='abcdefghjkmnpqrstuvwxyz23456789';let name='';for(let i=0;i<10;i++)name+=chars[Math.floor(Math.random()*chars.length)];return name+'@ghostmail-demo.test'}
+function start(){email.value=makeAddress();seconds=900;state.textContent='Demo address generated';if(clock)clearInterval(clock);tick();clock=setInterval(()=>{seconds--;tick();if(seconds<=0){clearInterval(clock);state.textContent='Demo timer ended'}},1000)}
+function tick(){timer.textContent=Math.floor(seconds/60).toString().padStart(2,'0')+':'+(seconds%60).toString().padStart(2,'0')}
+document.getElementById('generate').addEventListener('click',start);
+document.getElementById('reset').addEventListener('click',start);
+document.getElementById('copy').addEventListener('click',async()=>{if(!email.value.includes('@')){state.textContent='Generate an address first';return}try{await navigator.clipboard.writeText(email.value);state.textContent='Email copied!'}catch(e){email.select();state.textContent='Select and copy the address'}})
+document.getElementById('refresh').addEventListener('click',()=>state.textContent='Demo mode: real inbox is not connected yet');
+</script>
+</body>
+</html>
